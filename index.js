@@ -27,7 +27,6 @@ async function run() {
     const projects_collection = database.collection('projects');
 
     // node mailer
-    let testAccount = await nodemailer.createTestAccount();
 
     // create reusable transporter object using the default SMTP transport
 
@@ -36,8 +35,9 @@ async function run() {
         service: 'gmail',
         host: 'smtp.gmail.com',
         auth: {
-          user: 'rajuportfoliomessage@gmail.com',
-          pass: 'raju725800@',
+          user: process.env.GMAIL_USERNAME,
+
+          pass: process.env.GMAIL_PASSWORD,
         },
       })
     );
@@ -51,8 +51,8 @@ async function run() {
 
       // send mail with defined transport object
       let info = await transporter.sendMail({
-        from: 'rajuportfoliomessage@gmail.com', // sender address
-        to: 'robeyoulawal@gmail.com', // list of receivers
+        from: process.env.FROM_EMAIL, // sender address
+        to: process.env.TO_EMAIL, // list of receivers
         subject: subject, // Subject line
         text: message, // plain text body
         html: ` <div>
@@ -82,6 +82,15 @@ async function run() {
         img: finalImage,
       };
       const result = await projects_collection.insertOne(project);
+      res.send(result);
+    });
+
+    // get all projects
+
+    app.get('/projects', async (req, res) => {
+      const query = {};
+      const cursor = projects_collection.find(query);
+      const result = await cursor.toArray();
       res.send(result);
     });
   } finally {
