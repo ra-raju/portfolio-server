@@ -65,7 +65,7 @@ async function run() {
     });
 
     app.post('/project', async (req, res) => {
-      const { projectName, clientLink, serverLink, technologies, linveLink } =
+      const { projectName, clientLink, serverLink, technologies, liveLink } =
         req.body;
       // console.log('file', req.files);
       const { img } = req.files;
@@ -78,7 +78,7 @@ async function run() {
         clientLink,
         serverLink,
         technologies,
-        linveLink,
+        liveLink,
         img: finalImage,
       };
       const result = await projects_collection.insertOne(project);
